@@ -1,0 +1,2 @@
+{"type":"user","sessionId":"sess-abc","cwd":"/tmp/project","timestamp":"2026-01-01T12:00:00Z","message":{"role":"user","content":[{"type":"text","text":"Hello from Claude"}]}}
+{"type":"assistant","sessionId":"sess-abc","cwd":"/tmp/project","timestamp":"2026-01-01T12:00:01Z","message":{"role":"assistant","content":[{"type":"text","text":"Hi there"},{"type":"tool_use","name":"Bash","input":{"command":"echo test"}}]}}

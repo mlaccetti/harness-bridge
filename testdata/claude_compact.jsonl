@@ -1,0 +1,5 @@
+{"type":"user","sessionId":"compact-sess","cwd":"/tmp/p","timestamp":"2026-01-01T00:00:00Z","message":{"role":"user","content":[{"type":"text","text":"old topic start"}]}}
+{"type":"assistant","sessionId":"compact-sess","timestamp":"2026-01-01T00:00:01Z","message":{"role":"assistant","content":[{"type":"text","text":"old reply"}]}}
+{"type":"system","subtype":"compact_boundary","timestamp":"2026-01-02T00:00:00Z","compactMetadata":{"trigger":"auto","preTokens":50000,"postTokens":2000},"content":"Conversation compacted"}
+{"type":"user","sessionId":"compact-sess","timestamp":"2026-01-02T00:00:01Z","message":{"role":"user","content":[{"type":"text","text":"new topic after compact"}]}}
+{"type":"assistant","sessionId":"compact-sess","timestamp":"2026-01-02T00:00:02Z","message":{"role":"assistant","content":[{"type":"text","text":"new reply"}]}}

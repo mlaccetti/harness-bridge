@@ -1,0 +1,64 @@
+version: 2
+
+project_name: harness-bridge
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./... -race -count=1
+
+builds:
+  - id: harness-bridge
+    main: ./cmd/harness-bridge
+    binary: harness-bridge
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X main.version={{.Version}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.Date}}
+
+archives:
+  - formats: [tar.gz]
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: "checksums.txt"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^chore:"
+
+release:
+  github:
+    owner: mlaccetti
+    name: harness-bridge
+  draft: false
+  prerelease: auto
+
+brews:
+  - name: harness-bridge
+    repository:
+      owner: mlaccetti
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/mlaccetti/harness-bridge"
+    description: "Bridge coding-agent sessions between CLIs"
+    license: "MIT"
+    install: |
+      bin.install "harness-bridge"
+    test: |
+      system "#{bin}/harness-bridge", "--version"

@@ -1,0 +1,8 @@
+{
+  "sessionId": "gem-sess-1",
+  "startTime": "2026-01-03T00:00:00Z",
+  "messages": [
+    {"type": "user", "content": "Ship the bridge"},
+    {"type": "gemini", "content": "On it."}
+  ]
+}

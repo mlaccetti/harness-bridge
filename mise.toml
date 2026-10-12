@@ -1,0 +1,9 @@
+[tools]
+go = "1.24"
+golangci-lint = "latest"
+gofumpt = "latest"
+goreleaser = "latest"
+just = "latest"
+
+[env]
+_.path = ["./bin"]
