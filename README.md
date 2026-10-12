@@ -63,7 +63,7 @@ Session files use Claude-style JSONL under the Antigravity config directory (typ
 
 - **Origin** (`github.com/mlaccetti/harness-bridge`): only the owner (`mlaccetti`) can push branches.
 - **Contributions**: fork the repo, open a PR from your fork; you cannot push to origin directly.
-- **`main`**: protected by a ruleset requiring PR, review, CODEOWNERS approval, and CI job **`check`**.
+- **`main`**: protected by a ruleset requiring PR, review, CODEOWNERS approval, and CI job **`check`** (see [`.github/rulesets/`](.github/rulesets/)).
 
 ## CI and release
 
@@ -85,6 +85,8 @@ Create a fine-grained PAT scoped to those two repositories with minimum permissi
 2. Dry run locally: `just release-dry`
 3. Tag: `git tag v0.1.0 && git push origin v0.1.0`
 4. Users: `brew update && brew upgrade harness-bridge`
+
+When you run a **Homebrew-installed** release build, the CLI pings GitHub once per invocation (interactive stderr only) and may print a standalone `# ...` comment with `brew update && brew upgrade harness-bridge` if a newer tag exists. Disable with `HARNESS_BRIDGE_NO_UPGRADE_NOTICE=1`.
 
 ## License
 

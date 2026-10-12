@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/mlaccetti/harness-bridge/internal/cli"
+	"github.com/mlaccetti/harness-bridge/internal/upgrade"
 )
 
 var (
@@ -23,7 +24,10 @@ func main() {
 		root.SetVersionTemplate(version + " (" + commit + ", " + date + ")\n")
 	}
 
-	if err := fang.Execute(context.Background(), root, fang.WithVersion(version)); err != nil {
+	ctx := context.Background()
+	upgrade.MaybeSuggestUpgrade(ctx, version, os.Args, os.Stderr)
+
+	if err := fang.Execute(ctx, root, fang.WithVersion(version)); err != nil {
 		if root.SilenceErrors {
 			cobra.CheckErr(err)
 		}
