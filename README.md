@@ -86,6 +86,8 @@ Create a fine-grained PAT scoped to those two repositories with minimum permissi
 3. Tag: `git tag v0.1.0 && git push origin v0.1.0`
 4. Users: `brew update && brew upgrade harness-bridge`
 
+When you run a **Homebrew-installed** release build, the CLI pings GitHub once per invocation (interactive stderr only) and may print a standalone `# ...` comment with `brew update && brew upgrade harness-bridge` if a newer tag exists. Disable with `HARNESS_BRIDGE_NO_UPGRADE_NOTICE=1`.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
