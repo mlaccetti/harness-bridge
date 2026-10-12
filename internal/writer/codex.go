@@ -14,6 +14,7 @@ import (
 	"github.com/mlaccetti/harness-bridge/internal/paths"
 	"github.com/mlaccetti/harness-bridge/internal/render"
 	"github.com/mlaccetti/harness-bridge/internal/session"
+	"github.com/mlaccetti/harness-bridge/internal/version"
 
 	_ "modernc.org/sqlite"
 )
@@ -42,7 +43,7 @@ func (w *codexWriter) Write(sess session.Session, cwd string) (string, string, e
 			"timestamp":   now,
 			"cwd":         cwd,
 			"originator":  "harness_bridge",
-			"cli_version": "harness-bridge/0.1.0",
+			"cli_version": version.ToolLabel(),
 			"source":      "harness_bridge",
 		},
 	})
@@ -166,13 +167,14 @@ func insertThreadRow(sessionID, rolloutPath, cwd, title string) {
 	err = db.QueryRow("SELECT id FROM threads WHERE id = ?", sessionID).Scan(&existingID)
 	exists := err == nil
 
+	toolVersion := version.ToolLabel()
 	sandbox := `{"type":"workspace-write","writable_roots":[],"network_access":false,"exclude_tmpdir_env_var":false,"exclude_slash_tmp":false}`
 	if exists {
 		_, _ = db.Exec(`
 			UPDATE threads SET title = ?, first_user_message = ?, has_user_event = 1,
 			updated_at = ?, updated_at_ms = ?, rollout_path = ?,
-			cli_version = COALESCE(NULLIF(cli_version, ''), 'harness-bridge/0.1.0')
-			WHERE id = ?`, title, title, nowS, nowMS, rolloutPath, sessionID)
+			cli_version = COALESCE(NULLIF(cli_version, ''), ?)
+			WHERE id = ?`, title, title, nowS, nowMS, rolloutPath, toolVersion, sessionID)
 		return
 	}
 	_, _ = db.Exec(`
@@ -185,7 +187,7 @@ func insertThreadRow(sessionID, rolloutPath, cwd, title string) {
 		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 1, 0, ?, ?, 'enabled', ?, ?)`,
 		sessionID, rolloutPath, nowS, nowS, "harness_bridge",
 		"openai", cwdNorm, title, sandbox, "on-request",
-		"harness-bridge/0.1.0", title, nowMS, nowMS)
+		toolVersion, title, nowMS, nowMS)
 }
 
 func min(a, b int) int {

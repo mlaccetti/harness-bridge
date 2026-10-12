@@ -9,25 +9,20 @@ import (
 
 	"github.com/mlaccetti/harness-bridge/internal/cli"
 	"github.com/mlaccetti/harness-bridge/internal/upgrade"
-)
-
-var (
-	version = "dev"
-	commit  = "none"
-	date    = "unknown"
+	"github.com/mlaccetti/harness-bridge/internal/version"
 )
 
 func main() {
+	info := version.Get()
+
 	root := cli.NewRoot()
-	root.Version = version
-	if commit != "none" {
-		root.SetVersionTemplate(version + " (" + commit + ", " + date + ")\n")
-	}
+	root.Version = info.Version
+	root.SetVersionTemplate(info.Line())
 
 	ctx := context.Background()
-	upgrade.MaybeSuggestUpgrade(ctx, version, os.Args, os.Stderr)
+	upgrade.MaybeSuggestUpgrade(ctx, info.Version, os.Args, os.Stderr)
 
-	if err := fang.Execute(ctx, root, fang.WithVersion(version)); err != nil {
+	if err := fang.Execute(ctx, root, fang.WithVersion(info.Version)); err != nil {
 		if root.SilenceErrors {
 			cobra.CheckErr(err)
 		}
