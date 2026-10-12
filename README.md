@@ -24,6 +24,8 @@ go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@latest
 
 Module docs: [pkg.go.dev/github.com/mlaccetti/harness-bridge](https://pkg.go.dev/github.com/mlaccetti/harness-bridge).
 
+**Windows:** no installer yet. Download `harness-bridge_*_windows_amd64.zip` (or `arm64`) from [GitHub Releases](https://github.com/mlaccetti/harness-bridge/releases) and add `harness-bridge.exe` to your `PATH`. Release builds are cross-compiled on Linux CI (no Windows runner).
+
 Homebrew builds may print a one-line `# ...` upgrade hint on startup when a newer release exists (`HARNESS_BRIDGE_NO_UPGRADE_NOTICE=1` to disable).
 
 ## Usage
