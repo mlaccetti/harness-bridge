@@ -28,3 +28,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HOMEBREW_TAP_GITHUB_TOKEN: ${{ secrets.HOMEBREW_TAP_GITHUB_TOKEN }}
+
+      - name: Publish Go module
+        env:
+          MODULE: github.com/mlaccetti/harness-bridge
+          VERSION: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          PKG="${MODULE}/cmd/harness-bridge"
+
+          echo "Waiting for ${MODULE}@${VERSION} on proxy.golang.org..."
+          for _ in $(seq 1 18); do
+            if curl -fsS "https://proxy.golang.org/${MODULE}/@v/${VERSION}.info" >/dev/null; then
+              break
+            fi
+            sleep 10
+          done
+          curl -fsS "https://proxy.golang.org/${MODULE}/@v/${VERSION}.info"
+
+          mise exec -- go install "${PKG}@${VERSION}"
+          mise exec -- go list -m -json "${MODULE}@${VERSION}"
+
+          echo "Request pkg.go.dev indexing for ${MODULE}@${VERSION}"
+          curl -fsS -o /dev/null "https://pkg.go.dev/${MODULE}@${VERSION}" || true
