@@ -17,9 +17,12 @@ it is not affiliated with AuthSec AI.
 brew tap mlaccetti/tap
 brew install harness-bridge
 
-# or
+# or (Go module; published on each release tag)
 go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@latest
+# pin a version: go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@v0.1.0
 ```
+
+Module docs: [pkg.go.dev/github.com/mlaccetti/harness-bridge](https://pkg.go.dev/github.com/mlaccetti/harness-bridge).
 
 Homebrew builds may print a one-line `# ...` upgrade hint on startup when a newer release exists (`HARNESS_BRIDGE_NO_UPGRADE_NOTICE=1` to disable).
 
@@ -89,14 +92,14 @@ Please do not commit secrets or local session JSONL from your machine. Use `test
 ### CI and release
 
 - **CI** (`.github/workflows/ci.yml`): `pull_request` and pushes to `main` run `just check` via mise.
-- **Release** (`.github/workflows/release.yml`): pushing a tag `v*` runs GoReleaser (GitHub release + Homebrew tap).
+- **Release** (`.github/workflows/release.yml`): pushing a tag `v*` runs GoReleaser (GitHub release + Homebrew tap), then verifies the tag on **proxy.golang.org** and requests **pkg.go.dev** indexing (`go install …@vX.Y.Z`).
 
 | Secret | Purpose |
 |--------|---------|
 | `GITHUB_TOKEN` | Release assets (provided by Actions) |
 | `HOMEBREW_TAP_GITHUB_TOKEN` | PAT with **contents: write** on `mlaccetti/homebrew-tap` and this repo |
 
-**Release checklist:** merge to `main` with green **`check`** → `just release-dry` → signed tag `vX.Y.Z` → `git push origin vX.Y.Z` → users `brew update && brew upgrade harness-bridge`.
+**Release checklist:** merge to `main` with green **`check`** → `just release-dry` → signed tag `vX.Y.Z` → `git push origin vX.Y.Z` → release workflow publishes binaries, Homebrew formula, and the Go module → users `brew update && brew upgrade harness-bridge` or `go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@vX.Y.Z`.
 
 Repository rulesets are exported under [`.github/rulesets/`](.github/rulesets/). Solo-owner merges on `main` use administrator bypass once CI is green; fork PRs still need approval.
 

@@ -2,6 +2,10 @@ version: 2
 
 project_name: harness-bridge
 
+# Build from proxy.golang.org at the release tag (verifiable modules; see go version -m).
+gomod:
+  proxy: true
+
 before:
   hooks:
     - go mod tidy
