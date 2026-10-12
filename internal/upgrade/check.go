@@ -111,7 +111,7 @@ func suggest(ctx context.Context, current string, w io.Writer) {
 		return
 	}
 	// Standalone shell comment so the upgrade line can be copied from scripts or docs.
-	fmt.Fprintf(w, "# harness-bridge %s is available (you have %s). Run: brew update && brew upgrade harness-bridge\n",
+	_, _ = fmt.Fprintf(w, "# harness-bridge %s is available (you have %s). Run: brew update && brew upgrade harness-bridge\n",
 		stripV(latest), stripV(current))
 }
 
@@ -127,7 +127,7 @@ func fetchLatestTag(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	defer res.Body.Close()
+	defer func() { _ = res.Body.Close() }()
 	if res.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("github releases: %s", res.Status)
 	}
