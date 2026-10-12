@@ -1,8 +1,8 @@
 package upgrade
 
 import (
-	"context"
 	"bytes"
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"strings"

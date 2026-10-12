@@ -11,6 +11,7 @@ import (
 	"github.com/mlaccetti/harness-bridge/internal/paths"
 	"github.com/mlaccetti/harness-bridge/internal/render"
 	"github.com/mlaccetti/harness-bridge/internal/session"
+	"github.com/mlaccetti/harness-bridge/internal/version"
 )
 
 type claudeWriter struct {
@@ -46,7 +47,7 @@ func writeClaudeJSONL(sess session.Session, cwd, sourceCLI string, projectDir fu
 			"timestamp":   nowISO,
 			"sessionId":   newSessionID,
 			"cwd":         cwd,
-			"version":     "harness-bridge/0.1.0",
+			"version":     version.ToolLabel(),
 			"uuid":        recUUID,
 			"message": map[string]interface{}{
 				"role": role,

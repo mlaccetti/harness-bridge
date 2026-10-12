@@ -25,9 +25,9 @@ builds:
       - arm64
     ldflags:
       - -s -w
-      - -X main.version={{.Version}}
-      - -X main.commit={{.Commit}}
-      - -X main.date={{.Date}}
+      - -X github.com/mlaccetti/harness-bridge/internal/version.version={{.Version}}
+      - -X github.com/mlaccetti/harness-bridge/internal/version.commit={{.Commit}}
+      - -X github.com/mlaccetti/harness-bridge/internal/version.date={{.Date}}
 
 archives:
   - formats: [tar.gz]

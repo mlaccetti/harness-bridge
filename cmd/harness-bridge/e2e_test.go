@@ -26,7 +26,10 @@ func cliBin(t *testing.T) string {
 	}
 	modRoot := goModDir(t)
 	out := filepath.Join(os.TempDir(), "harness-bridge-e2e-test-bin")
-	cmd := exec.Command("go", "build", "-o", out, "./cmd/harness-bridge")
+	ldflags := "-X github.com/mlaccetti/harness-bridge/internal/version.version=0.0.0-e2e " +
+		"-X github.com/mlaccetti/harness-bridge/internal/version.commit=e2e " +
+		"-X github.com/mlaccetti/harness-bridge/internal/version.date=2026-01-01T00:00:00Z"
+	cmd := exec.Command("go", "build", "-ldflags", ldflags, "-o", out, "./cmd/harness-bridge")
 	cmd.Dir = modRoot
 	cmd.Env = goBuildEnv()
 	if err := cmd.Run(); err != nil {
@@ -126,6 +129,9 @@ func TestE2E_version(t *testing.T) {
 	}
 	if strings.TrimSpace(out) == "" {
 		t.Fatalf("empty version output")
+	}
+	if !strings.Contains(out, "0.0.0-e2e") {
+		t.Fatalf("expected embedded version in output, got %q", out)
 	}
 }
 
