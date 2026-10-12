@@ -2,9 +2,7 @@
 
 Bridge coding-agent sessions between CLIs so you can **resume** in another tool without re-explaining context.
 
-Supported sources and targets: **Claude Code**, **Codex**, **Cursor Agent** (`cursor-agent`), **Gemini CLI**, **Google Antigravity** (`agy`), plus universal **`markdown`** (`HANDOFF.md`).
-
-Aliases: `hb`, `session-bridge`, `sb`.
+Command aliases: `hb`, `session-bridge`, `sb`.
 
 ## Credits
 
@@ -23,18 +21,7 @@ brew install harness-bridge
 go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@latest
 ```
 
-## Development
-
-```bash
-mise trust && mise install
-just check
-just run --version
-just run list --from claude
-```
-
-Run `just` to see all recipes. Use `just run` (via `go run`) when you have not installed the binary yet.
-
-Tasks are defined in the `justfile` (no Makefile).
+Homebrew builds may print a one-line `# ...` upgrade hint on startup when a newer release exists (`HARNESS_BRIDGE_NO_UPGRADE_NOTICE=1` to disable).
 
 ## Usage
 
@@ -45,7 +32,24 @@ harness-bridge transfer --from claude --to cursor --cwd .
 harness-bridge transfer --from cursor --to markdown
 ```
 
-Shell completion (Fang):
+Use `--cwd` when the session is tied to a project directory. `transfer` supports planning flags such as `--dry-run` / `--plan`, `--stats`, `--last-turns`, and `--since-compaction` (see `harness-bridge transfer --help`).
+
+### Supported agents
+
+Use these values for `--from` and `--to` (except `markdown`, which is a transfer target only).
+
+| ID | Tool | Notes |
+|----|------|--------|
+| `claude` | [Claude Code](https://docs.anthropic.com/en/docs/claude-code) | Sessions under `~/.claude/projects/<encoded-cwd>/*.jsonl`. Resume in Claude with `/resume`. |
+| `codex` | [Codex CLI](https://github.com/openai/codex) | Rollouts under `~/.codex/sessions/.../rollout-*.jsonl`. Resume with `codex resume <session-id>`. |
+| `gemini` | [Gemini CLI](https://github.com/google-gemini/gemini-cli) | Project data under `~/.gemini/`. Resume with `gemini --resume <session-id>`. |
+| `cursor` | Cursor Agent (`cursor-agent`) | Transcripts under `~/.cursor/projects/<workspace>/agent-transcripts/`. Resume with `cursor-agent --resume <session-id>`. |
+| `antigravity` | Google Antigravity (`agy`) | Alias: `agy` for `--from` / `--to`. Claude-style JSONL under the Antigravity config dir (e.g. `~/.config/antigravity/projects/...`, or `~/Library/Application Support/Antigravity` on macOS). Run `agy` once so dirs exist. Resume with `agy --conversation <id>` or `agy --continue`. |
+| `markdown` | Handoff file | Writes `HANDOFF.md` in the target cwd (not a source for `list` / `show`). |
+
+After `transfer`, the CLI prints a short resume hint for the target you chose.
+
+### Shell completion
 
 ```bash
 harness-bridge completion bash
@@ -53,40 +57,48 @@ harness-bridge completion zsh
 harness-bridge completion fish
 ```
 
-Carapace provides context-aware completions for `--from`, `--to`, `--session`, and `--cwd`.
+Carapace completes `--from`, `--to`, `--session`, and `--cwd`.
 
-### Antigravity (`agy`)
+## Development
 
-Session files use Claude-style JSONL under the Antigravity config directory (typically `~/.config/antigravity/projects/...` on Linux, `~/Library/Application Support/Antigravity` on macOS when present). Run `agy` once so directories exist, then use `--from antigravity` (or `agy`).
+```bash
+mise trust && mise install
+just check
+just run --version
+just run list --from claude
+```
 
-## Repository access
+Run `just` for all recipes. Use `just run` when the binary is not installed yet. Tasks live in the `justfile` (no Makefile).
 
-- **Origin** (`github.com/mlaccetti/harness-bridge`): only the owner (`mlaccetti`) can push branches.
-- **Contributions**: fork the repo, open a PR from your fork; you cannot push to origin directly.
-- **`main`**: protected by a ruleset requiring PR, review, CODEOWNERS approval, and CI job **`check`** (see [`.github/rulesets/`](.github/rulesets/)). Repository **admins** can bypass review to merge their own PRs when CI passes; fork PRs still need approval.
+## Contributing
 
-## CI and release
+Contributions are welcome.
+
+1. **Fork** [mlaccetti/harness-bridge](https://github.com/mlaccetti/harness-bridge) on GitHub.
+2. Create a **feature branch** on your fork (`feat/...`, `fix/...`, etc.).
+3. Install tooling (`mise trust && mise install`) and run **`just check`** (format, lint, tests).
+4. Open a **pull request** against `main` with a clear description and test notes.
+5. Ensure the CI job **`check`** passes on the PR. A maintainer will review before merge.
+
+Please do not commit secrets or local session JSONL from your machine. Use `testdata/` for fixtures.
+
+**Branch protection:** `main` requires a PR, passing **`check`**, and code-owner review (see [`.github/rulesets/`](.github/rulesets/)). External contributors are expected to work from forks; maintainers merge after review.
+
+## Maintainers
+
+### CI and release
 
 - **CI** (`.github/workflows/ci.yml`): `pull_request` and pushes to `main` run `just check` via mise.
-- **Release** (`.github/workflows/release.yml`): pushing a tag `v*` runs GoReleaser.
-
-### Secrets
+- **Release** (`.github/workflows/release.yml`): pushing a tag `v*` runs GoReleaser (GitHub release + Homebrew tap).
 
 | Secret | Purpose |
 |--------|---------|
-| `GITHUB_TOKEN` | GitHub Release assets (provided by Actions) |
-| `HOMEBREW_TAP_GITHUB_TOKEN` | PAT with **contents: write** on `mlaccetti/homebrew-tap` (and releases on this repo) so GoReleaser can commit `Formula/harness-bridge.rb` |
+| `GITHUB_TOKEN` | Release assets (provided by Actions) |
+| `HOMEBREW_TAP_GITHUB_TOKEN` | PAT with **contents: write** on `mlaccetti/homebrew-tap` and this repo |
 
-Create a fine-grained PAT scoped to those two repositories with minimum permissions.
+**Release checklist:** merge to `main` with green **`check`** → `just release-dry` → signed tag `vX.Y.Z` → `git push origin vX.Y.Z` → users `brew update && brew upgrade harness-bridge`.
 
-### Release checklist
-
-1. Merge to `main`; ensure CI **`check`** is green.
-2. Dry run locally: `just release-dry`
-3. Tag: `git tag v0.1.0 && git push origin v0.1.0`
-4. Users: `brew update && brew upgrade harness-bridge`
-
-When you run a **Homebrew-installed** release build, the CLI pings GitHub once per invocation (interactive stderr only) and may print a standalone `# ...` comment with `brew update && brew upgrade harness-bridge` if a newer tag exists. Disable with `HARNESS_BRIDGE_NO_UPGRADE_NOTICE=1`.
+Repository rulesets are exported under [`.github/rulesets/`](.github/rulesets/). Solo-owner merges on `main` use administrator bypass once CI is green; fork PRs still need approval.
 
 ## License
 
