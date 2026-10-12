@@ -2,7 +2,7 @@
 
 Bridge coding-agent sessions between CLIs so you can **resume** in another tool without re-explaining context.
 
-Command aliases: `hb`, `session-bridge`, `sb`.
+Short names **`hb`**, **`sb`**, and **`session-bridge`** are installed as symlinks to the same binary (Homebrew). With `go install`, only the `harness-bridge` command is on your `PATH` unless you add your own symlinks.
 
 ## Credits
 
@@ -19,7 +19,7 @@ brew install harness-bridge
 
 # or (Go module; published on each release tag)
 go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@latest
-# pin a version: go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@v0.1.0
+# pin a version: go install github.com/mlaccetti/harness-bridge/cmd/harness-bridge@v0.1.2
 ```
 
 Module docs: [pkg.go.dev/github.com/mlaccetti/harness-bridge](https://pkg.go.dev/github.com/mlaccetti/harness-bridge).

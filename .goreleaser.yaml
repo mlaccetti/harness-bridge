@@ -64,5 +64,9 @@ brews:
     license: "MIT"
     install: |
       bin.install "harness-bridge"
+      bin.install_symlink "harness-bridge", "hb"
+      bin.install_symlink "harness-bridge", "sb"
+      bin.install_symlink "harness-bridge", "session-bridge"
     test: |
       system "#{bin}/harness-bridge", "--version"
+      system "#{bin}/hb", "--version"
