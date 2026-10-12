@@ -53,9 +53,11 @@ func moduleVersion(bi *debug.BuildInfo) string {
 		return bi.Main.Version
 	}
 	const module = "github.com/mlaccetti/harness-bridge"
-	for _, dep := range bi.Deps {
-		if dep.Path == module && dep.Version != "" {
-			return dep.Version
+	if strings.HasPrefix(bi.Main.Path, module+"/") || bi.Main.Path == module {
+		for _, dep := range bi.Deps {
+			if dep.Path == module && dep.Version != "" {
+				return dep.Version
+			}
 		}
 	}
 	return ""
