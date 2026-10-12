@@ -63,7 +63,7 @@ Session files use Claude-style JSONL under the Antigravity config directory (typ
 
 - **Origin** (`github.com/mlaccetti/harness-bridge`): only the owner (`mlaccetti`) can push branches.
 - **Contributions**: fork the repo, open a PR from your fork; you cannot push to origin directly.
-- **`main`**: protected by a ruleset requiring PR, review, CODEOWNERS approval, and CI job **`check`** (see [`.github/rulesets/`](.github/rulesets/)).
+- **`main`**: protected by a ruleset requiring PR, review, CODEOWNERS approval, and CI job **`check`** (see [`.github/rulesets/`](.github/rulesets/)). Repository **admins** can bypass review to merge their own PRs when CI passes; fork PRs still need approval.
 
 ## CI and release
 

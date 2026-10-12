@@ -4,7 +4,7 @@ Portable definitions for [GitHub repository rulesets](https://docs.github.com/en
 
 | File | Purpose |
 |------|---------|
-| `protect-main.json` | `main`: PR + CODEOWNERS review, CI job **`check`**, no force-push or delete |
+| `protect-main.json` | `main`: PR + CODEOWNERS review, CI job **`check`**, no force-push or delete; **Administrator** bypass for solo-owner merges |
 | `admin-only-branch-creation.json` | All refs: only admins may create branches on origin (admin role bypass) |
 
 These match the active rulesets in the repository (IDs are assigned by GitHub when created).
@@ -27,4 +27,4 @@ gh api "repos/${repo}/rulesets" --jq '.[] | {id, name}'
 gh api "repos/${repo}/rulesets/<id>" --method PUT --input .github/rulesets/protect-main.json
 ```
 
-**Note:** `actor_id` `5` with `actor_type` `RepositoryRole` is the repository **Administrator** role (bypass for branch creation).
+**Note:** `actor_id` `5` with `actor_type` `RepositoryRole` is the repository **Administrator** role (bypass on both rulesets). Fork PRs still need your review; for your own PRs use **Merge without waiting for requirements** once CI **`check`** is green.
