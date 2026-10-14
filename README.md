@@ -4,10 +4,6 @@ Bridge coding-agent sessions between CLIs so you can **resume** in another tool 
 
 Short names **`hb`**, **`sb`**, and **`session-bridge`** are installed as symlinks to the same binary (Homebrew). With `go install`, only the `harness-bridge` command is on your `PATH` unless you add your own symlinks.
 
-## Standalone scope
-
-This repository is intentionally **standalone**: it does not depend on rckt-skills, rckt-factory, muster, or agent marketplaces. You can install and run it with Go or Homebrew alone. Other harness tools may optionally shell out to `harness-bridge`; that is composition, not a required dependency. See [docs/STANDALONE.md](docs/STANDALONE.md) for the full boundary and optional integration notes.
-
 ## Credits
 
 This project is inspired by [authsec-bridge](https://github.com/authsec-ai/authsec-bridge),
